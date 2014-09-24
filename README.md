@@ -12,6 +12,7 @@ Resources Used
 --------------
 ###Library###
 The game is written in C++, using [SFML](http://www.sfml-dev.org), a framework for GNU/Linux, OS X, Windows, Android and iOS.
+The User Interface is made with [sfml-ui](https://github.com/PatateDev/sfml-ui) 0.4.1.
 
 ###Fonts###
 + Sawasdee (Copyright: 2007 Pol Udomwittayanukul <webnaipol@gmail.com>, License: GPL-2+ with Font exception)
