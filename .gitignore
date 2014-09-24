@@ -1,0 +1,13 @@
+### ADT Files ###
+project.properties
+bin/
+gen/
+libs/
+obj/
+.classpath
+.project
+.settings/
+
+### Misc. ###
+*~
+*.swp
