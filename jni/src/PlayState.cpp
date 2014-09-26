@@ -24,7 +24,8 @@
 
 PlayState::PlayState(Game &game)
 : State(game), m_score(0), m_scoreLabel(), m_circles(),
-  m_cooldownMax(sf::seconds(1/2.f)), m_radius(100.f), m_gameover(false)
+  m_cooldownMax(sf::seconds(1/2.f)), m_radius(100.f), m_gameover(false),
+  m_lastCircle(-m_radius, -m_radius)
 {
 	m_cooldown = m_cooldownMax;
 	LOGI("Starting new game");
@@ -148,8 +149,18 @@ void PlayState::spawnCircle()
 	int minX = m_radius + 5, maxX = size.x - m_radius - 5;
 	int minY = m_scoreLabel.getPosition().y + m_scoreLabel.getSize().y + m_radius + 5, maxY = size.y - m_radius - 5;
 
-	int x = rand() % (maxX - minX + 1) + minX;
-	int y = rand() % (maxY - minY + 1) + minY;
+	int x;
+	int y;
+
+	do
+	{
+		x = rand() % (maxX - minX + 1) + minX;
+		y = rand() % (maxY - minY + 1) + minY;
+	}
+	while ((x > m_lastCircle.x - 2 * m_radius && x < m_lastCircle.x + 2 * m_radius)
+			&& (y > m_lastCircle.y - 2 * m_radius && y < m_lastCircle.y + 2 * m_radius));
+
+	m_lastCircle = sf::Vector2i(x, y);
 
 	sf::Color color;
 	switch (rand() % 7)

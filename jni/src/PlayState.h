@@ -58,6 +58,7 @@ private:
 	sf::Time m_timeLived;
 	float m_radius;
 	bool m_gameover;
+	sf::Vector2i m_lastCircle;
 
 };
 
