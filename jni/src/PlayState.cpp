@@ -52,27 +52,32 @@ void PlayState::handleEvent(sf::Event const &event)
 	{
 		int x = event.type == sf::Event::TouchBegan ? event.touch.x : event.mouseButton.x;
 		int y = event.type == sf::Event::TouchBegan ? event.touch.y : event.mouseButton.y;
+		bool check = event.type == sf::Event::TouchBegan ? event.touch.finger == 0 : event.mouseButton.button == sf::Mouse::Left;
 
-		std::set<Circle*>::iterator it;
-		for (it = m_circles.begin(); it != m_circles.end(); it++)
+		if (check)
 		{
-			if ((*it)->contains(sf::Vector2f(x, y)))
+			std::set<Circle*>::iterator it;
+			for (it = m_circles.begin(); it != m_circles.end(); it++)
 			{
-				(*it)->setTouched(true);
-				int bonus = (*it)->getArea() / 100;
-				m_score += bonus;
+				if ((*it)->contains(sf::Vector2f(x, y)))
+				{
+					(*it)->setTouched(true);
+					int bonus = (*it)->getArea() / 100;
+					m_score += bonus;
 
-				std::ostringstream oss;
-				oss << "+" << bonus;
-				sf::ui::Label *bonusLabel(new sf::ui::Label);
-				initLabel(*bonusLabel, oss.str());
-				bonusLabel->setPosition(sf::Vector2f(/*x, y*/(*it)->getCenter()));
-				bonusLabel->move(bonusLabel->getSize() / -2.f);
-				m_scoreInfo.insert(bonusLabel);
+					std::ostringstream oss;
+					oss << "+" << bonus;
+					sf::ui::Label *bonusLabel(new sf::ui::Label);
+					initLabel(*bonusLabel, oss.str());
+					bonusLabel->setPosition(sf::Vector2f((*it)->getCenter()));
+					bonusLabel->move(bonusLabel->getSize() / -2.f);
+					m_scoreInfo.insert(bonusLabel);
+				}
 			}
 		}
 	}
 	}
+
 }
 
 void PlayState::deInit()
