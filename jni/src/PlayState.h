@@ -48,6 +48,9 @@ public:
 	int getScore() const;
 
 protected:
+	sf::ui::Label& initLabel(sf::ui::Label &label, sf::String text);
+
+protected:
 	void spawnCircle();
 
 private:
@@ -59,6 +62,7 @@ private:
 	float m_radius;
 	bool m_gameover;
 	sf::Vector2i m_lastCircle;
+	std::set<sf::ui::Label*> m_scoreInfo;
 
 };
 

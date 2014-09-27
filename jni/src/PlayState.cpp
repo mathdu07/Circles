@@ -25,7 +25,7 @@
 PlayState::PlayState(Game &game)
 : State(game), m_score(0), m_scoreLabel(), m_circles(),
   m_cooldownMax(sf::seconds(1/2.f)), m_radius(100.f), m_gameover(false),
-  m_lastCircle(-m_radius, -m_radius)
+  m_lastCircle(-m_radius, -m_radius), m_scoreInfo()
 {
 	m_cooldown = m_cooldownMax;
 	LOGI("Starting new game");
@@ -59,7 +59,16 @@ void PlayState::handleEvent(sf::Event const &event)
 			if ((*it)->contains(sf::Vector2f(x, y)))
 			{
 				(*it)->setTouched(true);
-				m_score += (*it)->getArea() / 100;
+				int bonus = (*it)->getArea() / 100;
+				m_score += bonus;
+
+				std::ostringstream oss;
+				oss << "+" << bonus;
+				sf::ui::Label *bonusLabel(new sf::ui::Label);
+				initLabel(*bonusLabel, oss.str());
+				bonusLabel->setPosition(sf::Vector2f(/*x, y*/(*it)->getCenter()));
+				bonusLabel->move(bonusLabel->getSize() / -2.f);
+				m_scoreInfo.insert(bonusLabel);
 			}
 		}
 	}
@@ -77,10 +86,16 @@ void PlayState::render(sf::RenderTarget &target)
 
 	target.draw(m_scoreLabel);
 
-	std::set<Circle*>::iterator it;
+	std::set<Circle*>::const_iterator it;
 	for (it = m_circles.begin(); it != m_circles.end(); it++)
 	{
 		target.draw(**it);
+	}
+
+	std::set<sf::ui::Label*>::const_iterator labelIt;
+	for (labelIt = m_scoreInfo.begin(); labelIt != m_scoreInfo.end(); labelIt++)
+	{
+		target.draw(**labelIt);
 	}
 
 	//DEBUG
@@ -129,6 +144,37 @@ void PlayState::update()
 		{
 			spawnCircle();
 			m_cooldown = m_cooldownMax;
+		}
+
+		std::set<sf::ui::Label*> infoToRem;
+		std::set<sf::ui::Label*>::iterator infoIt;
+		for (infoIt = m_scoreInfo.begin(); infoIt != m_scoreInfo.end(); infoIt++)
+		{
+			sf::ui::Label *label = *infoIt;
+
+			if (label->getFontColor().a == 0)
+			{
+				infoToRem.insert(label);
+			}
+			else
+			{
+				sf::Color color = label->getFontColor();
+
+				if (color.a <= 10)
+					color.a = 0;
+				else
+					color.a -= 10;
+
+				label->setFontColor(color);
+				label->move(sf::Vector2f(-2.f, -2.f));
+			}
+		}
+
+		for (std::set<sf::ui::Label*>::iterator lIt = infoToRem.begin(); lIt != infoToRem.end(); lIt++)
+		{
+			sf::ui::Label *label = *lIt;
+			m_scoreInfo.erase(label);
+			delete label;
 		}
 
 		m_scoreLabel.setText(printScore("Score : "));
@@ -199,6 +245,16 @@ std::string PlayState::printScore(std::string prefix) const
 	std::ostringstream oss;
 	oss << prefix << m_score;
 	return oss.str();
+}
+
+sf::ui::Label& PlayState::initLabel(sf::ui::Label &label, sf::String text)
+{
+	label.setFont(m_game.fonts().getContent());
+	label.setFontSize(48);
+	label.setText(text);
+	label.setFontColor(sf::Color::White);
+
+	return label;
 }
 
 bool PlayState::isGameOver() const
