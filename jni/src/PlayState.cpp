@@ -22,10 +22,13 @@
 #include <cstdlib>
 #include <sstream>
 
+inline float max(float a, float b);
+inline float min(float a, float b);
+
 PlayState::PlayState(Game &game)
 : State(game), m_score(0), m_scoreLabel(), m_circles(),
-  m_cooldownMax(sf::seconds(1/2.f)), m_radius(100.f), m_gameover(false),
-  m_lastCircle(-m_radius, -m_radius), m_scoreInfo()
+  m_cooldownMax(sf::seconds(1/2.f)), m_timeLived(),
+  m_radius(100.f), m_gameover(false), m_lastCircle(-m_radius, -m_radius), m_scoreInfo()
 {
 	m_cooldown = m_cooldownMax;
 	LOGI("Starting new game");
@@ -122,6 +125,9 @@ void PlayState::update()
 		m_timeLived += m_game.getDelta();
 		m_cooldown -= m_game.getDelta();
 
+		m_cooldownMax = sf::seconds(min(max(1.f / (0.1f * m_timeLived.asSeconds()), 0.3f), 1.f));
+		m_radius = max(150.f / max(0.1f * m_timeLived.asSeconds(), 1.f), 100.f);
+
 		std::set<Circle*>::iterator it;
 		std::set<Circle*> toRemove;
 		for (it = m_circles.begin(); it != m_circles.end(); it++)
@@ -202,14 +208,17 @@ void PlayState::spawnCircle()
 
 	int x;
 	int y;
+	int tries = 0, maxTries = 10;
 
 	do
 	{
 		x = rand() % (maxX - minX + 1) + minX;
 		y = rand() % (maxY - minY + 1) + minY;
+		tries++;
 	}
 	while ((x > m_lastCircle.x - 2 * m_radius && x < m_lastCircle.x + 2 * m_radius)
-			&& (y > m_lastCircle.y - 2 * m_radius && y < m_lastCircle.y + 2 * m_radius));
+			&& (y > m_lastCircle.y - 2 * m_radius && y < m_lastCircle.y + 2 * m_radius)
+			&& tries < maxTries);
 
 	m_lastCircle = sf::Vector2i(x, y);
 
@@ -275,4 +284,14 @@ void PlayState::setGameOver(bool gameover)
 int PlayState::getScore() const
 {
 	return m_score;
+}
+
+inline float max(float a, float b)
+{
+	return a >= b ? a : b;
+}
+
+inline float min(float a, float b)
+{
+	return a <= b ? a : b;
 }
