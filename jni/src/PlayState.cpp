@@ -30,6 +30,7 @@ PlayState::PlayState(Game &game)
   m_cooldownMax(sf::seconds(1/2.f)), m_timeLived(),
   m_radius(100.f), m_gameover(false), m_lastCircle(-m_radius, -m_radius), m_scoreInfo()
 {
+	m_maxScore = game.readMaxScore();
 	m_cooldown = m_cooldownMax;
 	LOGI("Starting new game");
 }
@@ -279,11 +280,23 @@ bool PlayState::isGameOver() const
 void PlayState::setGameOver(bool gameover)
 {
 	m_gameover = gameover;
+
+	if (m_gameover && m_score > m_maxScore)
+	{
+		m_maxScore = m_score;
+		m_game.saveMaxScore(m_maxScore);
+		LOGD("Max Score : %d", m_maxScore);
+	}
 }
 
 int PlayState::getScore() const
 {
 	return m_score;
+}
+
+int PlayState::getMaxScore() const
+{
+	return m_maxScore;
 }
 
 inline float max(float a, float b)

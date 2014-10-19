@@ -54,6 +54,9 @@ public:
     void resetView();
     sf::View getView() const;
 
+    void saveMaxScore(int maxScore);
+    int readMaxScore();
+
 private:
     void handleEvent(sf::Event const &event);
 
@@ -61,6 +64,7 @@ private:
     sf::RenderWindow &m_window;
     Assets m_assets;
     State *m_oldState, *m_state;
+    sf::String m_saveFolder;
 };
 
 #endif

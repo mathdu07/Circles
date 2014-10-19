@@ -47,6 +47,8 @@ public:
 
 	int getScore() const;
 
+	int getMaxScore() const;
+
 protected:
 	sf::ui::Label& initLabel(sf::ui::Label &label, sf::String text);
 
@@ -54,7 +56,7 @@ protected:
 	void spawnCircle();
 
 private:
-	int m_score;
+	int m_score, m_maxScore;
 	sf::ui::Label m_scoreLabel;
 	std::set<Circle*> m_circles;
 	sf::Time m_cooldown, m_cooldownMax;

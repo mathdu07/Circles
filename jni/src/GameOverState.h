@@ -48,9 +48,9 @@ public:
     void back();
 
 protected:
-    int m_score;
+    int m_score, m_maxScore;
     sf::ui::Label m_gameoverLabel;
-    sf::ui::Label m_scoreLabel;
+    sf::ui::Label m_scoreLabel, m_maxScoreLabel;
     CircleButton m_retry, m_back;
 };
 

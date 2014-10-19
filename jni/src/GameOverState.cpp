@@ -22,8 +22,8 @@
 #include <sstream>
 
 GameOverState::GameOverState(PlayState *play)
-: State(play->getGame()), m_score(play->getScore()),
-  m_gameoverLabel(), m_scoreLabel(),
+: State(play->getGame()), m_score(play->getScore()), m_maxScore(play->getMaxScore()),
+  m_gameoverLabel(), m_scoreLabel(), m_maxScoreLabel(),
   m_retry(this, &GameOverState::retry, 75, 75),
   m_back(this, &GameOverState::back, 75, 75)
 {
@@ -52,6 +52,15 @@ void GameOverState::init()
 	m_scoreLabel.setFontColor(sf::Color::White);
 	m_scoreLabel.setPosition(sf::Vector2f(size.x/2 - m_scoreLabel.getSize().x/2,
 			size.y/2 - m_scoreLabel.getSize().y/2));
+
+	m_maxScoreLabel.setFont(content);
+    m_maxScoreLabel.setFontSize(42);
+    oss.str("");
+	oss << "Max: " << m_maxScore;
+	m_maxScoreLabel.setText(oss.str());
+	m_maxScoreLabel.setFontColor(sf::Color::White);
+	m_maxScoreLabel.setPosition(sf::Vector2f(size.x/2 - m_maxScoreLabel.getSize().x/2,
+			m_scoreLabel.getPosition().y + m_scoreLabel.getSize().y + m_maxScoreLabel.getSize().y/2));
 
 	m_retry.setFont(content);
 	m_retry.setFontSize(52);
@@ -90,6 +99,7 @@ void GameOverState::render(sf::RenderTarget &target)
 
 	target.draw(m_gameoverLabel);
 	target.draw(m_scoreLabel);
+	target.draw(m_maxScoreLabel);
 
 	target.draw(m_retry);
 	target.draw(m_back);

@@ -21,9 +21,11 @@
 #include "MainMenuState.h"
 #include "SettingsState.h"
 #include "PlayState.h"
+#include <fstream>
 
 Game::Game(sf::RenderWindow &window)
-: m_window(window), m_assets(), m_oldState(0), m_state(0)
+: m_window(window), m_assets(), m_oldState(0), m_state(0),
+  m_saveFolder("/data/data/fr.mathdu07.circles/files/")
 {
 
 }
@@ -163,6 +165,30 @@ void Game::resetView()
 sf::View Game::getView() const
 {
 	return m_window.getView();
+}
+
+void Game::saveMaxScore(int maxScore)
+{
+	std::ofstream file(m_saveFolder + "score-b1", std::ofstream::out | std::ofstream::trunc | std::ofstream::binary);
+
+	file << maxScore;
+
+	file.close();
+}
+
+int Game::readMaxScore()
+{
+	std::ifstream file(m_saveFolder + "score-b1", std::ifstream::in | std::ifstream::binary);
+
+	if (!file)
+		return 0;
+
+	int maxScore;
+	file >> maxScore;
+
+	file.close();
+
+	return maxScore;
 }
 
 void Game::switchToMainMenu()
