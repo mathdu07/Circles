@@ -29,6 +29,8 @@ public:
 
 	virtual void init();
 
+	virtual void updateLayout();
+
     virtual void handleEvent(sf::Event const &event);
 
 	virtual void deInit();

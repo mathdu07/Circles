@@ -6,7 +6,7 @@ LOCAL_MODULE    := circles
 
 LOCAL_SRC_FILES := src/Main.cpp src/Game.cpp src/Assets.cpp src/Graphics.cpp src/Fonts.cpp \
               src/State.cpp src/MainMenuState.cpp src/CircleButton.cpp src/SettingsState.cpp \
-              src/PlayState.cpp src/Circle.cpp src/TransitionState.cpp src/GameOverState.cpp
+              src/PlayState.cpp src/Circle.cpp src/TransitionState.cpp src/GameOverState.cpp 
 
 LOCAL_SHARED_LIBRARIES := sfml-system
 LOCAL_SHARED_LIBRARIES += sfml-window

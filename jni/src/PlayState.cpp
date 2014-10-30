@@ -37,18 +37,28 @@ PlayState::PlayState(Game &game)
 
 void PlayState::init()
 {
+	float scale = m_game.getScale();
 	sf::Font const &font = m_game.fonts().getContent();
-	sf::Vector2u size = m_game.getSize();
 
 	m_scoreLabel.setText("Score: 0");
 	m_scoreLabel.setFont(font);
-	m_scoreLabel.setFontSize(42);
+	m_scoreLabel.setFontSize(42 * scale);
 	m_scoreLabel.setFontColor(sf::Color::White);
+
+	updateLayout();
+}
+
+void PlayState::updateLayout()
+{
+	sf::Vector2u size = m_game.getSize();
+
 	m_scoreLabel.setPosition(sf::Vector2f(size.x / 2.f  - m_scoreLabel.getSize().x / 2.f, 5));
 }
 
 void PlayState::handleEvent(sf::Event const &event)
 {
+	State::handleEvent(event);
+
 	switch (event.type)
 	{
 	case sf::Event::TouchBegan:
@@ -172,10 +182,10 @@ void PlayState::update()
 			{
 				sf::Color color = label->getFontColor();
 
-				if (color.a <= 10)
+				if (color.a <= 20)
 					color.a = 0;
 				else
-					color.a -= 10;
+					color.a -= 20;
 
 				label->setFontColor(color);
 				label->move(sf::Vector2f(-2.f, -2.f));

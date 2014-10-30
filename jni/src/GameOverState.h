@@ -33,15 +33,17 @@ public:
 	 */
 	GameOverState(PlayState *play);
 
-    void init();
+    virtual void init();
 
-    void handleEvent(sf::Event const &event);
+    virtual void updateLayout();
 
-    void deInit();
+    virtual void handleEvent(sf::Event const &event);
 
-    void render(sf::RenderTarget &target);
+    virtual void deInit();
 
-    void update();
+    virtual void render(sf::RenderTarget &target);
+
+    virtual void update();
 
     void retry();
 

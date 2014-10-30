@@ -19,7 +19,7 @@
  #include "State.h"
 
  State::State(Game &game)
- : m_game(game)
+ : m_game(game), m_orientation(game.getSize().x <= game.getSize().y ? PORTRAIT : LANDSCAPE)
  {
 
  }
@@ -27,4 +27,13 @@
  Game& State::getGame()
  {
     return m_game;
+ }
+
+ void State::handleEvent(sf::Event const &event)
+ {
+	 if (event.type == sf::Event::Resized)
+	 {
+		 m_orientation = (m_game.getSize().x <= m_game.getSize().y ? PORTRAIT : LANDSCAPE);
+		 updateLayout();
+	 }
  }

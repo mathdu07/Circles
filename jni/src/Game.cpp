@@ -22,10 +22,15 @@
 #include "SettingsState.h"
 #include "PlayState.h"
 #include <fstream>
+#include <cmath>
 
-Game::Game(sf::RenderWindow &window)
+inline unsigned int min(unsigned int a, unsigned int b);
+
+Game::Game(sf::RenderWindow &window, int aaLevel, unsigned int originalDefinition)
 : m_window(window), m_assets(), m_oldState(0), m_state(0),
-  m_saveFolder("/data/data/fr.mathdu07.circles/files/")
+  m_saveFolder("/data/data/fr.mathdu07.circles/files/"),
+  m_aaLevel(aaLevel), m_originalDefinition(originalDefinition),
+  m_clearColor(sf::Color(51, 51, 51))
 {
 
 }
@@ -33,10 +38,14 @@ Game::Game(sf::RenderWindow &window)
 Game::~Game()
 {
     if (m_oldState)
+    {
         delete m_oldState;
+    }
 
     if (m_state)
+    {
         delete m_state;
+    }
 }
 
 sf::RenderWindow& Game::getWindow()
@@ -44,13 +53,23 @@ sf::RenderWindow& Game::getWindow()
     return m_window;
 }
 
-void Game::run()
+bool Game::create()
 {
 	sf::ContextSettings settings;
-	settings.antialiasingLevel = 1;
-    m_window.create(sf::VideoMode(480, 800), "Circles", sf::Style::Titlebar | sf::Style::Close, settings);
-    m_assets.loadAssets();
-    setState(new MainMenuState(*this));
+	settings.antialiasingLevel = m_aaLevel;
+	m_window.create(sf::VideoMode::getDesktopMode(), "Circles", sf::Style::Titlebar | sf::Style::Close, settings);
+
+	return true;
+}
+
+void Game::run()
+{
+	if (!create())
+		return;
+
+	m_assets.loadAssets();
+	setState(new MainMenuState(*this));
+
     sf::Event event;
     sf::Time updateDelta(getDelta());
     sf::Clock updateClock;
@@ -69,6 +88,12 @@ void Game::run()
                 m_state->update();
                 nextUpdate += updateDelta;
             }
+
+            m_window.clear(m_clearColor);
+            beforeRendering();
+            m_state->render(getRenderTarget());
+            afterRendering();
+            m_window.display();
         }
         else
         {
@@ -76,20 +101,15 @@ void Game::run()
             sf::sleep(sleepTime);
         }
 
-        m_window.clear();
-
-        m_state->render(m_window);
-
-        m_window.display();
     }
 }
 
 sf::Time Game::getDelta() const
 {
-	return sf::seconds(1/60.f);
+	return sf::seconds(1/30.f);
 }
 
-void Game::handleEvent(sf::Event const &event)
+void Game::handleEvent(sf::Event &event)
 {
     switch (event.type)
     {
@@ -102,6 +122,7 @@ void Game::handleEvent(sf::Event const &event)
 
     if (m_window.isOpen() && m_state != 0)
     {
+    	beforeHandleEvent(event);
         m_state->handleEvent(event);
     }
 }
@@ -191,6 +212,51 @@ int Game::readMaxScore()
 	return maxScore;
 }
 
+sf::RenderTarget& Game::getRenderTarget()
+{
+	return m_window;
+}
+
+void Game::beforeHandleEvent(sf::Event &event)
+{
+
+}
+
+void Game::beforeRendering()
+{
+
+}
+
+void Game::afterRendering()
+{
+
+}
+
+unsigned int Game::getOriginalDefinition() const
+{
+	return m_originalDefinition;
+}
+
+unsigned int Game::getDefinition() const
+{
+	return min(getSize().x, getSize().y);
+}
+
+float Game::getScale() const
+{
+	return getDefinition() / (float) getOriginalDefinition();
+}
+
+sf::Color Game::getClearColor() const
+{
+	return m_clearColor;
+}
+
+void Game::setClearColor(sf::Color color)
+{
+	m_clearColor = color;
+}
+
 void Game::switchToMainMenu()
 {
     setState(new MainMenuState(*this));
@@ -204,4 +270,9 @@ void Game::switchToSettings()
 void Game::play()
 {
     setState(new PlayState(*this));
+}
+
+inline unsigned int min(unsigned int a, unsigned int b)
+{
+	return a > b ? b : a;
 }

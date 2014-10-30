@@ -34,7 +34,7 @@ public:
 
     virtual void init();
 
-    virtual void handleEvent(sf::Event const &event);
+    virtual void updateLayout();
 
     virtual void deInit();
 

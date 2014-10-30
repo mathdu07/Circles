@@ -28,11 +28,12 @@ class State;
 class Game
 {
 public:
-    Game(sf::RenderWindow &window);
+    Game(sf::RenderWindow &window, int aaLevel, unsigned int originalDefinition);
     virtual ~Game();
 
     sf::RenderWindow& getWindow();
 
+    virtual bool create();
     void run();
 
     Graphics const& gfx();
@@ -41,7 +42,7 @@ public:
     void setState(State* state);
     State* getState();
 
-    sf::Vector2u getSize() const;
+    virtual sf::Vector2u getSize() const;
     sf::Time getDelta() const;
 
     void switchToMainMenu();
@@ -50,21 +51,39 @@ public:
 
     void exit();
 
-    void setView(sf::View view); //Use a copy of the view, needs to be set each time the view is modified
-    void resetView();
-    sf::View getView() const;
+    virtual void setView(sf::View view); //Use a copy of the view, needs to be set each time the view is modified
+    virtual void resetView();
+    virtual sf::View getView() const;
 
     void saveMaxScore(int maxScore);
     int readMaxScore();
 
-private:
-    void handleEvent(sf::Event const &event);
+    unsigned int getOriginalDefinition() const;
+
+    unsigned int getDefinition() const;
+
+    float getScale() const;
+
+    sf::Color getClearColor() const;
+    void setClearColor(sf::Color color);
 
 private:
+    void handleEvent(sf::Event &event);
+
+    virtual sf::RenderTarget& getRenderTarget();
+
+    virtual void beforeHandleEvent(sf::Event &event);
+
+    virtual void beforeRendering();
+    virtual void afterRendering();
+
+protected:
     sf::RenderWindow &m_window;
     Assets m_assets;
     State *m_oldState, *m_state;
     sf::String m_saveFolder;
+    int m_aaLevel, m_originalDefinition;
+    sf::Color m_clearColor;
 };
 
 #endif

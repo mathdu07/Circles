@@ -24,7 +24,7 @@
 int main(int argc, char *argv[])
 {
     sf::RenderWindow window;
-    Game game(window);
+    Game game(window, 1, 480);
 
     LOGI("Starting Circles (%s)", CIRCLES_VERSION);
     LOGD("Initializing random seed");

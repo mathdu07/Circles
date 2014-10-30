@@ -22,6 +22,12 @@
 #include "Main.h"
 #include "Game.h"
 
+enum Orientation
+{
+	PORTRAIT,
+	LANDSCAPE
+};
+
 class State
 {
 public:
@@ -29,7 +35,9 @@ public:
 
     virtual void init() = 0;
 
-    virtual void handleEvent(sf::Event const &event) = 0;
+    virtual void updateLayout() = 0;
+
+    virtual void handleEvent(sf::Event const &event);
 
     virtual void deInit() = 0;
 
@@ -41,6 +49,7 @@ public:
 
 protected:
     Game &m_game;
+    Orientation m_orientation;
 };
 
 #endif

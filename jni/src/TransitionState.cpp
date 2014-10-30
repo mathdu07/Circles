@@ -46,6 +46,16 @@ void TransitionState::init()
 		m_game.exit();
 	}
 
+	m_currentSprite.setTexture(m_currentTexture.getTexture());
+	m_nextSprite.setTexture(m_nextTexture.getTexture());
+
+	updateLayout();
+}
+
+void TransitionState::updateLayout()
+{
+	sf::Vector2u size = m_game.getSize();
+
 	switch (m_transition)
 	{
 	case SLIDE_LEFT:
@@ -54,14 +64,6 @@ void TransitionState::init()
 	case SLIDE_RIGHT:
 		m_nextSprite.setPosition(sf::Vector2f(size.x, 0));
 	}
-
-	m_currentSprite.setTexture(m_currentTexture.getTexture());
-	m_nextSprite.setTexture(m_nextTexture.getTexture());
-}
-
-void TransitionState::handleEvent(sf::Event const &event)
-{
-
 }
 
 void TransitionState::deInit()
