@@ -43,7 +43,7 @@ bool Circle::contains(sf::Vector2f point) const
 {
 	sf::Vector2f center = getCenter();
 
-	return pow(point.x - center.x, 2) + pow(point.y - center.y, 2) <= pow(m_shape.getRadius(), 2);
+	return pow(point.x - center.x, 2) + pow(point.y - center.y, 2) <= pow(m_shape.getRadius() + m_shape.getOutlineThickness(), 2);
 }
 
 sf::Vector2f Circle::getCenter() const

@@ -57,7 +57,7 @@ bool CircleButton::isCoordOnComponent(int x, int y) const
 {
 	sf::Vector2f center = getCenter();
 
-	return pow(x - center.x, 2) + pow(y - center.y, 2) <= pow(getRadius(), 2);
+	return pow(x - center.x, 2) + pow(y - center.y, 2) <= pow(getRadius() + m_circle.getOutlineThickness(), 2);
 }
 
 void CircleButton::updateFixed(sf::Time delta)
