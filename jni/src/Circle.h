@@ -24,7 +24,7 @@
 class Circle : public sf::Drawable
 {
 public:
-	Circle(int x, int y, int radius, sf::Color color);
+	Circle(int x, int y, int radius, sf::Color color, float scale);
 
 	bool contains(sf::Vector2f point) const;
 
@@ -58,6 +58,10 @@ public:
 
 	float getArea() const;
 
+	float getScale() const;
+
+	void setScale(float scale);
+
 protected:
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
@@ -67,6 +71,7 @@ private:
 	sf::CircleShape m_shape;
 	bool m_touched;
 	float m_speed;
+	float m_scale;
 
 };
 

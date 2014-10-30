@@ -19,19 +19,19 @@
 #include "Circle.h"
 #include <cmath>
 
-Circle::Circle(int x, int y, int radius, sf::Color color)
-: m_shape(radius, 100), m_touched(false), m_speed(1/20.f)
+Circle::Circle(int x, int y, int radius, sf::Color color, float scale)
+: m_shape(radius * scale, 100), m_touched(false), m_speed(1/20.f), m_scale(scale)
 {
 	setThickness(3);
 	setColor(color);
 	m_shape.setFillColor(sf::Color(0, 0, 0, 0));
 	m_shape.setPosition(sf::Vector2f(x, y));
-	m_shape.setOrigin(sf::Vector2f(radius, radius));
+	m_shape.setOrigin(sf::Vector2f(radius * scale, radius * scale));
 }
 
 void Circle::updateCoord()
 {
-	m_shape.setOrigin(sf::Vector2f(getRadius(), getRadius()));
+	m_shape.setOrigin(sf::Vector2f(m_shape.getRadius(), m_shape.getRadius()));
 }
 
 void Circle::draw(sf::RenderTarget& target, sf::RenderStates states) const
@@ -43,7 +43,7 @@ bool Circle::contains(sf::Vector2f point) const
 {
 	sf::Vector2f center = getCenter();
 
-	return pow(point.x - center.x, 2) + pow(point.y - center.y, 2) <= pow(getRadius(), 2);
+	return pow(point.x - center.x, 2) + pow(point.y - center.y, 2) <= pow(m_shape.getRadius(), 2);
 }
 
 sf::Vector2f Circle::getCenter() const
@@ -59,7 +59,7 @@ void Circle::setCenter(sf::Vector2f center)
 
 float Circle::getRadius() const
 {
-	return m_shape.getRadius();
+	return m_shape.getRadius() / m_scale;
 }
 
 void Circle::setRadius(float radius)
@@ -67,7 +67,7 @@ void Circle::setRadius(float radius)
 	if (radius < 0.f)
 		radius = 0.f;
 
-	m_shape.setRadius(radius);
+	m_shape.setRadius(radius * m_scale);
 	updateCoord();
 }
 
@@ -125,6 +125,18 @@ void Circle::setSpeed(float speed)
 		speed = 0;
 
 	m_speed = speed;
+}
+
+float Circle::getScale() const
+{
+	return m_scale;
+}
+
+void Circle::setScale(float scale)
+{
+	float radius = getRadius();
+	m_scale = scale;
+	setRadius(radius);
 }
 
 float Circle::getArea() const

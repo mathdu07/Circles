@@ -213,9 +213,11 @@ void PlayState::update()
 void PlayState::spawnCircle()
 {
 	sf::Vector2u size = m_game.getSize();
+	float scale = m_game.getScale();
 
-	int minX = m_radius + 5, maxX = size.x - m_radius - 5;
-	int minY = m_scoreLabel.getPosition().y + m_scoreLabel.getSize().y + m_radius + 5, maxY = size.y - m_radius - 5;
+	int minX = m_radius * scale + 5, maxX = size.x - m_radius * scale - 5;
+	int minY = m_scoreLabel.getPosition().y + m_scoreLabel.getSize().y + m_radius * scale + 5;
+	int maxY = size.y - m_radius * scale - 5;
 
 	int x;
 	int y;
@@ -227,8 +229,8 @@ void PlayState::spawnCircle()
 		y = rand() % (maxY - minY + 1) + minY;
 		tries++;
 	}
-	while ((x > m_lastCircle.x - 2 * m_radius && x < m_lastCircle.x + 2 * m_radius)
-			&& (y > m_lastCircle.y - 2 * m_radius && y < m_lastCircle.y + 2 * m_radius)
+	while ((x > m_lastCircle.x - 2 * m_radius * scale && x < m_lastCircle.x + 2 * m_radius * scale)
+			&& (y > m_lastCircle.y - 2 * m_radius * scale && y < m_lastCircle.y + 2 * m_radius * scale)
 			&& tries < maxTries);
 
 	m_lastCircle = sf::Vector2i(x, y);
@@ -262,7 +264,7 @@ void PlayState::spawnCircle()
 		break;
 	}
 
-	m_circles.insert(new Circle(x, y, m_radius, color));
+	m_circles.insert(new Circle(x, y, m_radius, color, scale));
 }
 
 std::string PlayState::printScore(std::string prefix) const
