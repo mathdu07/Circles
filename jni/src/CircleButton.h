@@ -25,9 +25,9 @@ class CircleButton : public sf::ui::AbstractButton, public sf::ui::IText
 {
 public:
 	template<typename C>
-	CircleButton(C *object, void(C::*function)(), float radius, float maxRadius)
+	CircleButton(C *object, void(C::*function)(), float radius, float maxRadius = -1.f)
 	: AbstractButton(), m_circle(radius, 100),
-	  m_text(), m_active(false), m_maxRadius(maxRadius), m_animationSpeed(0.2f),
+	  m_text(), m_active(false), m_maxRadius(maxRadius == -1.f ? radius : maxRadius), m_animationSpeed(0.2f),
 	  m_task(new sf::priv::ThreadMemberFunc<C>(function, object))
 	{
 		setBorderRadius(2.f);
@@ -70,6 +70,10 @@ public:
 	float getRadius() const;
 
 	void setRadius(float radius);
+
+	float getMaxRadius() const;
+
+	void setMaxRadius(float maxRadius);
 
 	sf::Color getOutlineCircleColor() const;
 

@@ -34,6 +34,7 @@
 	 if (event.type == sf::Event::Resized)
 	 {
 		 m_orientation = (m_game.getSize().x <= m_game.getSize().y ? PORTRAIT : LANDSCAPE);
+		 m_game.resetView();
 		 updateLayout();
 	 }
  }

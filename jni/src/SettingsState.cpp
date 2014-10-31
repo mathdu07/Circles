@@ -21,7 +21,7 @@
 
 SettingsState::SettingsState(Game &game)
 : State(game), m_title(), m_dev(), m_version(),
-  m_back(&game, &Game::switchToMainMenu, 75 * game.getScale(), game.getSize().y)
+  m_back(&game, &Game::switchToMainMenu, 75 * game.getScale())
 {
 
 }
@@ -64,12 +64,22 @@ void SettingsState::init()
 void SettingsState::updateLayout()
 {
 	sf::Vector2u size = m_game.getSize();
+	m_back.setMaxRadius(std::max(size.x, size.y));
 
 	sf::Vector2f titleSize = m_title.getSize();
 	m_title.setPosition(sf::Vector2f(size.x/2 - titleSize.x/2, size.y/8 - titleSize.y/2));
-	m_dev.setPosition(size.x/2.f - m_dev.getSize().x/2.f, 5 * size.y/16.f - m_dev.getSize().y/2.f);
-	m_version.setPosition(size.x/2.f - m_version.getSize().x/2.f, 3 * size.y/8.f - m_version.getSize().y/2.f);
 	m_back.setPosition(size.x/2.f, size.y - m_back.getRadius() - 5);
+
+	if (m_orientation == PORTRAIT)
+	{
+		m_dev.setPosition(size.x/2.f - m_dev.getSize().x/2.f, 5 * size.y/16.f - m_dev.getSize().y/2.f);
+		m_version.setPosition(size.x/2.f - m_version.getSize().x/2.f, 3 * size.y/8.f - m_version.getSize().y/2.f);
+	}
+	else
+	{
+		m_dev.setPosition(10.f, 6 * size.y/16.f - m_dev.getSize().y/2.f);
+		m_version.setPosition(size.x/4 - m_version.getSize().x/2 + size.x/2, 6 * size.y/16.f - m_version.getSize().y/2.f);
+	}
 }
 
 void SettingsState::handleEvent(sf::Event const &event)

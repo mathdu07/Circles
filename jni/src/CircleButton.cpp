@@ -136,6 +136,16 @@ void CircleButton::setRadius(float radius)
 	updateCoord();
 }
 
+float CircleButton::getMaxRadius() const
+{
+	return m_maxRadius;
+}
+
+void CircleButton::setMaxRadius(float maxRadius)
+{
+	m_maxRadius = maxRadius;
+}
+
 sf::Color CircleButton::getOutlineCircleColor() const
 {
 	return m_circle.getOutlineColor();

@@ -23,6 +23,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 #include <SFML/System.hpp>
+#include <algorithm>
 #include "Logger.h"
 
 #define CIRCLES_VERSION "Beta 1"

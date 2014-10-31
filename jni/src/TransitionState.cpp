@@ -22,7 +22,7 @@ TransitionState::TransitionState(State *currentState, State *nextState, Transiti
 : State(currentState->getGame()), m_currentState(currentState), m_nextState(nextState),
   m_transition(transition), m_speed(200.f),
   m_currentTexture(), m_nextTexture(), m_view(sf::FloatRect(0, 0, m_game.getSize().x, m_game.getSize().y)),
-  m_currentSprite(), m_nextSprite()
+  m_currentSprite(), m_nextSprite(), m_lastOrientation(m_orientation)
 {
 
 }
@@ -56,14 +56,21 @@ void TransitionState::updateLayout()
 {
 	sf::Vector2u size = m_game.getSize();
 
+	if (m_lastOrientation != m_orientation)
+	{
+		m_game.setState(m_nextState);
+	}
+
 	switch (m_transition)
 	{
 	case SLIDE_LEFT:
 		m_nextSprite.setPosition(sf::Vector2f(-1.f * size.x, 0));
 		break;
 	case SLIDE_RIGHT:
-		m_nextSprite.setPosition(sf::Vector2f(size.x, 0));
+		m_nextSprite.setPosition(sf::Vector2f(1.f * size.x, 0));
 	}
+
+	m_lastOrientation = m_orientation;
 }
 
 void TransitionState::deInit()

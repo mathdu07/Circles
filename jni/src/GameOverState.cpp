@@ -24,8 +24,8 @@
 GameOverState::GameOverState(PlayState *play)
 : State(play->getGame()), m_score(play->getScore()), m_maxScore(play->getMaxScore()),
   m_gameoverLabel(), m_scoreLabel(), m_maxScoreLabel(),
-  m_retry(this, &GameOverState::retry, 75 * m_game.getScale(), 75 * m_game.getScale()),
-  m_back(this, &GameOverState::back, 75 * m_game.getScale(), 75 * m_game.getScale())
+  m_retry(this, &GameOverState::retry, 75 * m_game.getScale()),
+  m_back(this, &GameOverState::back, 75 * m_game.getScale())
 {
 
 }
@@ -83,7 +83,8 @@ void GameOverState::updateLayout()
 	m_gameoverLabel.setPosition(sf::Vector2f(size.x/2 - goSize.x/2, size.y/8 - goSize.y/2));
 
 	m_scoreLabel.setPosition(sf::Vector2f(size.x/2 - m_scoreLabel.getSize().x/2,
-			size.y/2 - m_scoreLabel.getSize().y/2));
+			(size.y - m_gameoverLabel.getPosition().y - m_gameoverLabel.getSize().y - m_retry.getSize().y)/2
+			- m_scoreLabel.getSize().y/2 + m_gameoverLabel.getPosition().y + m_gameoverLabel.getSize().y));
 	m_maxScoreLabel.setPosition(sf::Vector2f(size.x/2 - m_maxScoreLabel.getSize().x/2,
 			m_scoreLabel.getPosition().y + m_scoreLabel.getSize().y + m_maxScoreLabel.getSize().y/2));
 
@@ -126,13 +127,13 @@ void GameOverState::update()
 void GameOverState::retry()
 {
 	TransitionState *state = new TransitionState(this, new PlayState(m_game), SLIDE_LEFT);
-	state->setSpeed(600.f * m_game.getScale());
+	state->setSpeed(m_game.getSize().x * 1.5f * m_game.getScale());
 	m_game.setState(state);
 }
 
 void GameOverState::back()
 {
 	TransitionState *state = new TransitionState(this, new MainMenuState(m_game), SLIDE_RIGHT);
-	state->setSpeed(600.f * m_game.getScale());
+	state->setSpeed(m_game.getSize().x * 1.5f * m_game.getScale());
 	m_game.setState(state);
 }

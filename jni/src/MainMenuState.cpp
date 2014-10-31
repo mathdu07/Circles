@@ -19,9 +19,9 @@
 #include "MainMenuState.h"
 
 MainMenuState::MainMenuState(Game &game)
-: State(game), m_title(), m_start(&game, &Game::play, 120 * game.getScale(), game.getSize().y/2 + 20),
-  m_settings(&game, &Game::switchToSettings, 75 * game.getScale(), game.getSize().y),
-  m_exit(&game, &Game::exit, 75 * game.getScale(), game.getSize().y)
+: State(game), m_title(), m_start(&game, &Game::play, 120 * game.getScale()),
+  m_settings(&game, &Game::switchToSettings, 75 * game.getScale()),
+  m_exit(&game, &Game::exit, 75 * game.getScale())
 {
 }
 
@@ -68,12 +68,27 @@ void MainMenuState::init()
 void MainMenuState::updateLayout()
 {
 	sf::Vector2u size = m_game.getSize();
+	m_start.setMaxRadius(std::max(size.x, size.y) /2 + 20);
+	m_settings.setMaxRadius(std::max(size.x, size.y));
+	m_exit.setMaxRadius(std::max(size.x, size.y));
 
 	sf::Vector2f titleSize = m_title.getSize();
-	m_title.setPosition(sf::Vector2f(size.x/2 - titleSize.x/2, size.y/8 - titleSize.y/2));
-	m_start.setPosition(sf::Vector2f(size.x/2, size.y/2));
-	m_settings.setPosition(sf::Vector2f(size.x/4, size.y - m_settings.getRadius() - 10.f));
-	m_exit.setPosition(sf::Vector2f(3 * size.x/4, size.y - m_exit.getRadius() - 10.f));
+
+	if (m_orientation == PORTRAIT)
+	{
+		m_title.setPosition(sf::Vector2f(size.x/2 - titleSize.x/2, size.y/8 - titleSize.y/2));
+		m_start.setPosition(sf::Vector2f(size.x/2, size.y/2));
+		m_settings.setPosition(sf::Vector2f(size.x/4, size.y - m_settings.getRadius() - 10.f));
+		m_exit.setPosition(sf::Vector2f(3 * size.x/4, size.y - m_exit.getRadius() - 10.f));
+	}
+	else
+	{
+		m_title.setPosition(sf::Vector2f((size.x - m_settings.getSize().x - 10.f)/2 - titleSize.x/2, size.y/8 - titleSize.y/2));
+		m_start.setPosition(sf::Vector2f((size.x - m_settings.getSize().x - 10.f)/2,
+				(size.y - m_title.getPosition().y - m_title.getSize().y)/2 + m_title.getPosition().y + m_title.getSize().y));
+		m_settings.setPosition(sf::Vector2f(size.x - m_settings.getRadius() - 10.f, size.y/4));
+		m_exit.setPosition(sf::Vector2f(size.x - m_settings.getRadius() - 10.f, 3 * size.y/4));
+	}
 }
 
 void MainMenuState::handleEvent(sf::Event const &event)

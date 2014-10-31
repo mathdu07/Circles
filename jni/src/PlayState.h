@@ -67,7 +67,7 @@ private:
 	bool m_gameover;
 	sf::Vector2i m_lastCircle;
 	std::set<sf::ui::Label*> m_scoreInfo;
-
+	Orientation m_lastOrientation;
 };
 
 #endif

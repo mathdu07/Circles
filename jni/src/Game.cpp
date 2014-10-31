@@ -24,8 +24,6 @@
 #include <fstream>
 #include <cmath>
 
-inline unsigned int min(unsigned int a, unsigned int b);
-
 Game::Game(sf::RenderWindow &window, int aaLevel, unsigned int originalDefinition)
 : m_window(window), m_assets(), m_oldState(0), m_state(0),
   m_saveFolder("/data/data/fr.mathdu07.circles/files/"),
@@ -180,7 +178,7 @@ void Game::setView(sf::View view)
 
 void Game::resetView()
 {
-	setView(m_window.getDefaultView());
+	setView(sf::View(sf::FloatRect(0, 0, getSize().x, getSize().y)));
 }
 
 sf::View Game::getView() const
@@ -239,7 +237,7 @@ unsigned int Game::getOriginalDefinition() const
 
 unsigned int Game::getDefinition() const
 {
-	return min(getSize().x, getSize().y);
+	return std::min(getSize().x, getSize().y);
 }
 
 float Game::getScale() const
@@ -270,9 +268,4 @@ void Game::switchToSettings()
 void Game::play()
 {
     setState(new PlayState(*this));
-}
-
-inline unsigned int min(unsigned int a, unsigned int b)
-{
-	return a > b ? b : a;
 }

@@ -53,6 +53,7 @@ protected:
 	sf::RenderTexture m_currentTexture, m_nextTexture;
 	sf::View m_view;
 	sf::Sprite m_currentSprite, m_nextSprite;
+	Orientation m_lastOrientation;
 };
 
 

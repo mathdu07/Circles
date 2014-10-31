@@ -22,13 +22,11 @@
 #include <cstdlib>
 #include <sstream>
 
-inline float max(float a, float b);
-inline float min(float a, float b);
-
 PlayState::PlayState(Game &game)
 : State(game), m_score(0), m_scoreLabel(), m_circles(),
   m_cooldownMax(sf::seconds(1/2.f)), m_timeLived(),
-  m_radius(100.f), m_gameover(false), m_lastCircle(-m_radius, -m_radius), m_scoreInfo()
+  m_radius(100.f), m_gameover(false), m_lastCircle(-m_radius, -m_radius), m_scoreInfo(),
+  m_lastOrientation(m_orientation)
 {
 	m_maxScore = game.readMaxScore();
 	m_cooldown = m_cooldownMax;
@@ -53,6 +51,26 @@ void PlayState::updateLayout()
 	sf::Vector2u size = m_game.getSize();
 
 	m_scoreLabel.setPosition(sf::Vector2f(size.x / 2.f  - m_scoreLabel.getSize().x / 2.f, 5));
+
+	if (m_orientation != m_lastOrientation)
+	{
+		std::set<Circle*>::iterator it;
+		for (it = m_circles.begin(); it != m_circles.end(); it++)
+		{
+			Circle *circle = *it;
+			sf::Vector2f center = circle->getCenter();
+			circle->setCenter(sf::Vector2f(center.y, center.x));
+		}
+
+		std::set<sf::ui::Label*>::iterator itLab;
+		for (itLab = m_scoreInfo.begin(); itLab != m_scoreInfo.end(); itLab++)
+		{
+			sf::ui::Label *label = *itLab;
+			label->setPosition(sf::Vector2f(label->getPosition().y, label->getPosition().x));
+		}
+	}
+
+	m_lastOrientation = m_orientation;
 }
 
 void PlayState::handleEvent(sf::Event const &event)
@@ -136,8 +154,8 @@ void PlayState::update()
 		m_timeLived += m_game.getDelta();
 		m_cooldown -= m_game.getDelta();
 
-		m_cooldownMax = sf::seconds(min(max(1.f / (0.1f * m_timeLived.asSeconds()), 0.3f), 1.f));
-		m_radius = max(150.f / max(0.1f * m_timeLived.asSeconds(), 1.f), 100.f);
+		m_cooldownMax = sf::seconds(std::min(std::max(1.f / (0.1f * m_timeLived.asSeconds()), 0.3f), 1.f));
+		m_radius = std::max(150.f / std::max(0.1f * m_timeLived.asSeconds(), 1.f), 100.f);
 
 		std::set<Circle*>::iterator it;
 		std::set<Circle*> toRemove;
@@ -205,7 +223,7 @@ void PlayState::update()
 	else
 	{
 		TransitionState *state = new TransitionState(this, new GameOverState(this), SLIDE_RIGHT);
-		state->setSpeed(600.f);
+		state->setSpeed(m_game.getSize().x * 1.5f * m_game.getScale());
 		m_game.setState(state);
 	}
 }
@@ -309,14 +327,4 @@ int PlayState::getScore() const
 int PlayState::getMaxScore() const
 {
 	return m_maxScore;
-}
-
-inline float max(float a, float b)
-{
-	return a >= b ? a : b;
-}
-
-inline float min(float a, float b)
-{
-	return a <= b ? a : b;
 }
