@@ -21,6 +21,7 @@
 #include "GameOverState.h"
 #include <cstdlib>
 #include <sstream>
+#include <cmath>
 
 PlayState::PlayState(Game &game)
 : State(game), m_score(0), m_scoreLabel(), m_circles(),
@@ -94,7 +95,9 @@ void PlayState::handleEvent(sf::Event const &event)
 				if ((*it)->contains(sf::Vector2f(x, y)))
 				{
 					(*it)->setTouched(true);
-					int bonus = (*it)->getArea() / 100;
+					float multiplier = std::max(1.f, m_timeLived.asSeconds() / 30.f);
+					int bonus = ceil(log((*it)->getArea()) * 10);
+					bonus *= multiplier;
 					m_score += bonus;
 
 					std::ostringstream oss;
@@ -154,7 +157,7 @@ void PlayState::update()
 		m_timeLived += m_game.getDelta();
 		m_cooldown -= m_game.getDelta();
 
-		m_cooldownMax = sf::seconds(std::min(std::max(1.f / (0.1f * m_timeLived.asSeconds()), 0.3f), 1.f));
+		m_cooldownMax = sf::seconds(std::min(std::max(1.f / (0.1f * m_timeLived.asSeconds()), 0.2f), 1.f));
 		m_radius = std::max(150.f / std::max(0.1f * m_timeLived.asSeconds(), 1.f), 100.f);
 
 		std::set<Circle*>::iterator it;
