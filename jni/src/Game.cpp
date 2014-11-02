@@ -188,7 +188,7 @@ sf::View Game::getView() const
 
 void Game::saveMaxScore(int maxScore)
 {
-	std::ofstream file(m_saveFolder + "score-b1", std::ofstream::out | std::ofstream::trunc | std::ofstream::binary);
+	std::ofstream file(m_saveFolder + "score-b2", std::ofstream::out | std::ofstream::trunc | std::ofstream::binary);
 
 	file << maxScore;
 
@@ -197,7 +197,7 @@ void Game::saveMaxScore(int maxScore)
 
 int Game::readMaxScore()
 {
-	std::ifstream file(m_saveFolder + "score-b1", std::ifstream::in | std::ifstream::binary);
+	std::ifstream file(m_saveFolder + "score-b2", std::ifstream::in | std::ifstream::binary);
 
 	if (!file)
 		return 0;

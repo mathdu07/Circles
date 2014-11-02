@@ -26,7 +26,7 @@
 #include <algorithm>
 #include "Logger.h"
 
-#define CIRCLES_VERSION "Beta 1"
+#define CIRCLES_VERSION "Beta 2"
 
 
 #endif
